@@ -3,7 +3,7 @@ import 'package:better_player_plus/src/core/better_player_utils.dart';
 class BetterPlayerSubtitle {
   factory BetterPlayerSubtitle(String value, bool isWebVTT) {
     try {
-      if (!value.startsWith("NOTE") && !value.startsWith("LANGUAGE")) {
+      if (!value.startsWith('NOTE') && !value.startsWith('LANGUAGE')) {
         final scanner = value.split('\n');
         if (scanner.length == 2) {
           return _handle2LinesSubtitles(scanner);
@@ -28,7 +28,7 @@ class BetterPlayerSubtitle {
 
   static BetterPlayerSubtitle _handle2LinesSubtitles(List<String> scanner) {
     try {
-      if (!scanner.any((p) => p.startsWith("NOTE") || p.startsWith("LANGUAGE"))) {
+      if (!scanner.any((p) => p.startsWith('NOTE') || p.startsWith('LANGUAGE'))) {
         final timeSplit = scanner[0].split(timerSeparator);
         if (timeSplit.length == 2) {
           final start = _stringToDuration(timeSplit[0]);
@@ -46,7 +46,7 @@ class BetterPlayerSubtitle {
 
   static BetterPlayerSubtitle _handle3LinesAndMoreSubtitles(List<String> scanner, bool isWebVTT) {
     try {
-      if (!scanner.any((p) => p.startsWith("NOTE") || p.startsWith("LANGUAGE"))) {
+      if (!scanner.any((p) => p.startsWith('NOTE') || p.startsWith('LANGUAGE'))) {
         int? index = -1;
         List<String> timeSplit = [];
         int firstLineOfText = 0;

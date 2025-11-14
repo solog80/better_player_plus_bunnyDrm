@@ -415,6 +415,10 @@ class BetterPlayerController {
     }
   }
 
+  ///Helper function to detect if a URL is a content:// URI (Android Scoped Storage).
+  ///Content URIs are used on Android 10+ instead of direct file paths.
+  bool _isContentUri(String url) => url.startsWith('content://');
+
   ///Internal method which invokes videoPlayerController source setup.
   Future<void> _setupDataSource(BetterPlayerDataSource betterPlayerDataSource) async {
     switch (betterPlayerDataSource.type) {
@@ -442,26 +446,43 @@ class BetterPlayerController {
         );
 
       case BetterPlayerDataSourceType.file:
-        final file = File(betterPlayerDataSource.url);
-        if (!file.existsSync()) {
-          BetterPlayerUtils.log(
-            "File ${file.path} doesn't exists. This may be because "
-            "you're acessing file from native path and Flutter doesn't "
-            'recognize this path.',
+        // Handle content:// URIs (Android Scoped Storage) - pass directly as URI string
+        if (_isContentUri(betterPlayerDataSource.url)) {
+          await videoPlayerController?.setNetworkDataSource(
+            betterPlayerDataSource.url,
+            headers: _getHeaders(),
+            showNotification: _betterPlayerDataSource?.notificationConfiguration?.showNotification,
+            title: _betterPlayerDataSource?.notificationConfiguration?.title,
+            author: _betterPlayerDataSource?.notificationConfiguration?.author,
+            imageUrl: _betterPlayerDataSource?.notificationConfiguration?.imageUrl,
+            notificationChannelName: _betterPlayerDataSource?.notificationConfiguration?.notificationChannelName,
+            overriddenDuration: _betterPlayerDataSource!.overriddenDuration,
+            activityName: _betterPlayerDataSource?.notificationConfiguration?.activityName,
+            clearKey: _betterPlayerDataSource?.drmConfiguration?.clearKey,
+          );
+        } else {
+          // Handle regular file paths
+          final file = File(betterPlayerDataSource.url);
+          if (!file.existsSync()) {
+            BetterPlayerUtils.log(
+              "File ${file.path} doesn't exists. This may be because "
+              "you're acessing file from native path and Flutter doesn't "
+              'recognize this path.',
+            );
+          }
+
+          await videoPlayerController?.setFileDataSource(
+            File(betterPlayerDataSource.url),
+            showNotification: _betterPlayerDataSource?.notificationConfiguration?.showNotification,
+            title: _betterPlayerDataSource?.notificationConfiguration?.title,
+            author: _betterPlayerDataSource?.notificationConfiguration?.author,
+            imageUrl: _betterPlayerDataSource?.notificationConfiguration?.imageUrl,
+            notificationChannelName: _betterPlayerDataSource?.notificationConfiguration?.notificationChannelName,
+            overriddenDuration: _betterPlayerDataSource!.overriddenDuration,
+            activityName: _betterPlayerDataSource?.notificationConfiguration?.activityName,
+            clearKey: _betterPlayerDataSource?.drmConfiguration?.clearKey,
           );
         }
-
-        await videoPlayerController?.setFileDataSource(
-          File(betterPlayerDataSource.url),
-          showNotification: _betterPlayerDataSource?.notificationConfiguration?.showNotification,
-          title: _betterPlayerDataSource?.notificationConfiguration?.title,
-          author: _betterPlayerDataSource?.notificationConfiguration?.author,
-          imageUrl: _betterPlayerDataSource?.notificationConfiguration?.imageUrl,
-          notificationChannelName: _betterPlayerDataSource?.notificationConfiguration?.notificationChannelName,
-          overriddenDuration: _betterPlayerDataSource!.overriddenDuration,
-          activityName: _betterPlayerDataSource?.notificationConfiguration?.activityName,
-          clearKey: _betterPlayerDataSource?.drmConfiguration?.clearKey,
-        );
       case BetterPlayerDataSourceType.memory:
         final file = await _createFile(
           _betterPlayerDataSource!.bytes!,

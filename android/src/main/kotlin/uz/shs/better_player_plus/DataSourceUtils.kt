@@ -52,4 +52,12 @@ internal object DataSourceUtils {
         val scheme = uri.scheme
         return scheme == "http" || scheme == "https"
     }
+
+    @JvmStatic
+    fun isContentUri(uri: Uri?): Boolean {
+        if (uri == null || uri.scheme == null) {
+            return false
+        }
+        return uri.scheme == "content"
+    }
 }

@@ -182,8 +182,8 @@ class DataSource {
   ///
   /// The [sourceType] is always required.
   ///
-  /// The [uri] argument takes the form of `'https://example.com/video.mp4'` or
-  /// `'file://${file.path}'`.
+  /// The [uri] argument takes the form of `'https://example.com/video.mp4'`,
+  /// `'file://${file.path}'`, or `'content://...'` (Android Scoped Storage).
   ///
   /// The [formatHint] argument can be null.
   ///
@@ -235,7 +235,8 @@ class DataSource {
   /// The URI to the video file.
   ///
   /// This will be in different formats depending on the [DataSourceType] of
-  /// the original video.
+  /// the original video. Supports http://, https://, file://, asset://, and
+  /// content:// (Android Scoped Storage) URI schemes.
   final String? uri;
 
   /// **Android only**. Will override the platform's generic file format
