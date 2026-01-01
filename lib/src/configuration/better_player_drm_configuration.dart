@@ -9,6 +9,8 @@ class BetterPlayerDrmConfiguration {
     this.certificateUrl,
     this.headers,
     this.clearKey,
+    this.videoId;
+  this.libraryId;
   });
 
   ///Type of DRM
@@ -28,4 +30,10 @@ class BetterPlayerDrmConfiguration {
 
   ///Additional headers send with auth request, used only for WIDEVINE DRM
   final Map<String, String>? headers;
+
+  ///VideoId
+  final String? videoId;
+
+  ///LibraryId
+  final String? libraryId;
 }
